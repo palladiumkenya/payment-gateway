@@ -7,6 +7,10 @@ const MpesaPayload = sequelize.define('mpesa_payload', {
         primaryKey: true,
         autoIncrement: true
     },
+    merchant_request_id: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     checkout_request_id: {
         type: DataTypes.STRING,
         allowNull: true

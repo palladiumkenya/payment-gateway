@@ -2,12 +2,13 @@ import db from "../models";
 import MpesaPayload from "../models/mpesa-payload.model";
 
 const processMpesaTransaction = async (payload) => {
-  console.log("payload ", payload.Body.stkCallback.CallbackMetadata);
+  console.log("payload ", JSON.stringify(payload));
   const transactionMetadata = payload.Body.stkCallback.CallbackMetadata.Item;
   db.sequelize
     .sync()
     .then(() => {
       MpesaPayload.create({
+        merchant_request_id: payload.Body.stkCallback.MerchantRequestID,
         checkout_request_id: payload.Body.stkCallback.CheckoutRequestID,
         business_short_code: "1234",
         amount: filterData(transactionMetadata, "Amount"),
@@ -37,8 +38,8 @@ const processMpesaTransaction = async (payload) => {
 };
 
 const filterData = (data, key) => {
-    const filteredResults = data.filter((element) => element.Name === key);
-    return filteredResults.length > 0 ? filteredResults[0].Value : undefined;
-  };
+  const filteredResults = data.filter((element) => element.Name === key);
+  return filteredResults.length > 0 ? filteredResults[0].Value : undefined;
+};
 
 export default processMpesaTransaction;
