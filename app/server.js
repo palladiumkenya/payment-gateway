@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import sequelize from "./utils/database-connection";
 import db from "./models/index";
+import router from "./routes/transactions.route";
 
 const app = express();
 const port = 5051;
@@ -14,6 +15,8 @@ app.use(cors("*"));
 app.get("/", (req, res) => {
   res.send("hello world");
 });
+
+app.use('/api', router);
 
 async function init() {
   try {
