@@ -10,7 +10,7 @@ router.post("/confirmation-url", (req, res) => {
 });
 
 router.get("/pull-mpesa-transactions", async (req,res) => {
-  const result = await fetchCompletedTransactions(req.query.q)
+  const result = await fetchCompletedTransactions(req.query.paymentRequests, req.query.invoiceNumbers, req.query.businessShortCode)
   return res.status(result.status).json({results: result.result})
 })
 

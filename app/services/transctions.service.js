@@ -44,24 +44,35 @@ const filterData = (data, key) => {
   return filteredResults.length > 0 ? filteredResults[0].Value : undefined;
 };
 
-export const fetchCompletedTransactions = async (requestIDs) => {
-  var requests = atob(requestIDs);
-  let queryParam = "";
+export const fetchCompletedTransactions = async (
+  requestIDs,
+  billNumbers,
+  businessShortCode
+) => {
+  const requests = requestIDs ? atob(requestIDs) : '';
+  const invoiceNumbers = billNumbers ? atob(billNumbers) : '';
+  let requestQueryParam = '';
+  let invoiceNumbersQueryParam = '';
+  let sqlQuery = '';
   if (requests) {
-    const programs = requests.split(",");
-    queryParam = programs.map((item) => `'${item}'`).join(",");
+    const reqIDs = requests.split(",");
+    requestQueryParam = reqIDs.map((item) => `'${item}'`).join(",");
+
+    sqlQuery = `SELECT * FROM mpesa_transactions WHERE merchant_request_id in (${requestQueryParam})`;
+  } else if (invoiceNumbers && businessShortCode) {
+    const reqIDs = requests.split(",");
+    invoiceNumbersQueryParam = reqIDs.map((item) => `'${item}'`).join(",");
+
+    sqlQuery = `SELECT * FROM mpesa_transactions WHERE paybill_reference_number in (${invoiceNumbers}) AND business_short_code = ${businessShortCode}`;
   }
 
   return db.sequelize
     .authenticate()
     .then(() => {
       return db.sequelize
-        .query(
-          `SELECT * FROM mpesa_transactions WHERE merchant_request_id in (${queryParam})`,
-          {
-            type: db.sequelize.QueryTypes.SELECT,
-          }
-        )
+        .query(sqlQuery, {
+          type: db.sequelize.QueryTypes.SELECT,
+        })
         .then((result) => {
           const response = {
             status: 200,
