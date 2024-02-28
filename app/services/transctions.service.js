@@ -42,4 +42,41 @@ const filterData = (data, key) => {
   return filteredResults.length > 0 ? filteredResults[0].Value : undefined;
 };
 
+export const fetchCompletedTransactions = async (requestIDs) => {
+  var requests = atob(requestIDs);
+
+  return db.sequelize
+    .authenticate()
+    .then(() => {
+      return db.sequelize
+        .query(
+          `SELECT * FROM mpesa_transactions WHERE merchant_request_id in (${requests})`,
+          {
+            type: db.sequelize.QueryTypes.SELECT,
+          }
+        )
+        .then((result) => {
+          const response = {
+            status: 200,
+            result: result,
+          };
+          return response;
+        })
+        .catch((error) => {
+          const response = {
+            status: 500,
+            result: "Error fetching transaction",
+          };
+          return response;
+        });
+    })
+    .catch((error) => {
+      const response = {
+        status: 500,
+        result: "Error fetching transaction",
+      };
+      return response;
+    });
+};
+
 export default processMpesaTransaction;

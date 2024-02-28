@@ -1,7 +1,7 @@
 import sequelize from '../utils/database-connection';
 import { DataTypes } from 'sequelize';
 
-const MpesaPayload = sequelize.define('mpesa_payload', {
+const MpesaPayload = sequelize.define('mpesa_transactions', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
