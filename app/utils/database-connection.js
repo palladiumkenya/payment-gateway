@@ -1,9 +1,11 @@
-import { Sequelize } from "sequelize";
+require('dotenv').config(); // Load environment variables
 
-const sequelize = new Sequelize("payment_gateway", "root", "jess#2020", {
-  host: "localhost",
-  port: 3306,
-  dialect: "mysql",
+const Sequelize = require('sequelize');
+
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  dialect: 'mysql',
   pool: {
     max: 5,
     min: 0,
@@ -12,4 +14,4 @@ const sequelize = new Sequelize("payment_gateway", "root", "jess#2020", {
   },
 });
 
-export default sequelize;
+module.exports = sequelize;
